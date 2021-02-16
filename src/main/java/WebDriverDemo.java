@@ -1,22 +1,13 @@
-import java.util.concurrent.TimeUnit;
-
-import org.openqa.selenium.*;
-import org.openqa.selenium.chrome.ChromeDriver;
-
 
 public class WebDriverDemo {
-    public static void main(String[] args) {
-        System.setProperty("webdriver.chrome.driver", "E:\\ChromeDriver\\chromedriver.exe");
-        WebDriver driver = new ChromeDriver();
-        try {
-            driver.get("http://www.google.com");
-            driver.findElement(By.name("q")).sendKeys("java");
+    public String findInBrowse(SearchDetails search) {
+        String failed = "failed";
+        String passed= "Поиск";
 
-            // Get attribute of current active element
-            String attr = driver.switchTo().activeElement().getAttribute("title");
-            System.out.println(attr);
-        } finally {
-            driver.quit();
-        }
+        if(search.getBrowserName()==null && search.getFindWord()==null&& search.getProperty()==null){
+            return failed;
+        }else
+           return passed;
+
     }
 }
