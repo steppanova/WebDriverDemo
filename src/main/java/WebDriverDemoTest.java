@@ -5,41 +5,55 @@ import org.testng.Assert;
 import org.testng.annotations.*;
 
 public class WebDriverDemoTest {
-    SearchDetails search = new SearchDetails();
     WebDriverDemo webDriver = new WebDriverDemo();
+    SearchForm searchForm;
+    PageHomeBrowser page;
     String result;
     private WebDriver driver;
 
-    @BeforeSuite
-    public void beforeSuite() {
-        search.setBrowserName("http://www.google.com");
-        search.setFindWord("java");
-        search.setProperty("webdriver.chrome.driver");
-        search.setUrl("E:\\ChromeDriver\\chromedriver.exe");
-    }
-
     @BeforeTest
     public void beforeTest() {
-        System.setProperty(search.getProperty(), search.getUrl());
+        System.setProperty("webdriver.chrome.driver", "E:\\ChromeDriver\\chromedriver.exe");
         driver = new ChromeDriver();
-        driver.get(search.getBrowserName());
-        driver.findElement(By.name("q")).sendKeys(search.getFindWord());
-        // Get attribute of current active element
-        result = driver.switchTo().activeElement().getAttribute("title");
-
+        page = new PageHomeBrowser(driver);
+        page.initialized();
+        searchForm = new SearchForm(driver);
+        searchForm.setName();
+        result = searchForm.findResult();
     }
-
     @Test
     public void findInBrowse() {
-        String title = webDriver.findInBrowse(search);
+        String title = webDriver.findInBrowse(page.search);
         Assert.assertEquals(result, title);
-
     }
-
     @AfterTest
     public void afterSuite() {
         driver.quit();
-
     }
-
+}
+class SearchForm{
+    WebDriver driver;
+    By name = By.name("q");
+    String wordSearch = "java";
+    String findWord = "title";
+    public SearchForm(WebDriver driver) {
+        this.driver = driver;
+    }
+    public void setName (){
+        driver.findElement(name).sendKeys(wordSearch);
+    }
+    public String findResult() {
+        return driver.switchTo().activeElement().getAttribute(findWord);
+    }
+}
+class PageHomeBrowser{
+    WebDriver driver;
+    SearchDetails search = new SearchDetails();
+    public void initialized(){
+        search.setBrowserName("http://www.google.com");
+        driver.get(search.getBrowserName());
+    }
+    public PageHomeBrowser(WebDriver driver) {
+        this.driver = driver;
+    }
 }
